@@ -1,5 +1,4 @@
 ﻿using System;
-using Input;
 using UniRx;
 using UnityEngine;
 using Zenject;
@@ -12,7 +11,7 @@ namespace Models
         IReactiveProperty<CheckPointType> Type { get; set; }
     }
     
-    public class CheckPointModel : GameModel, ICheckPointModel
+    public class CheckPointModel : ObjectModel, ICheckPointModel
     {
         public IReactiveProperty<CheckPointType> Type { get; set; } = 
             new ReactiveProperty<CheckPointType>();

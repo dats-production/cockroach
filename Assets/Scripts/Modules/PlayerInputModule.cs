@@ -1,18 +1,18 @@
 using UniRx;
 using UnityEngine;
 
-namespace Input
+namespace Modules
 {
-    public interface IPlayerInput
+    public interface IPlayerInputModule
     {
-        IReactiveProperty<Vector3> MousePosition { get; set; }
+        Vector3 MousePosition { get; set; }
     }
 
-    public class PlayerInput : MonoBehaviour, IPlayerInput
+    public class PlayerInputModule : MonoBehaviour, IPlayerInputModule
     {
         [SerializeField] private Camera _camera;
         private LayerMask _groundLayerMask;
-        public IReactiveProperty<Vector3> MousePosition { get; set; } = new ReactiveProperty<Vector3>();
+        public Vector3 MousePosition { get; set; }
     
         private void Start()
         {
@@ -25,7 +25,7 @@ namespace Input
             var ray = _camera.ScreenPointToRay(UnityEngine.Input.mousePosition);
             if (Physics.Raycast(ray, out var raycastHit, float.MaxValue, _groundLayerMask))
             {
-                MousePosition.Value = raycastHit.point;
+                MousePosition = raycastHit.point;
             }
         }
     }

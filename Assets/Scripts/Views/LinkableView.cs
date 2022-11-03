@@ -6,15 +6,15 @@ namespace Views
     public interface ILinkable
     {
         Transform Transform { get; }
-        void Link(GameModel entity);
+        void Link(ObjectModel entity);
     }
     
     public abstract class LinkableView : MonoBehaviour, ILinkable
     {
-        protected GameModel Model;
+        protected ObjectModel Model;
         public Transform Transform => transform;
 
-        public virtual void Link(GameModel model)
+        public virtual void Link(ObjectModel model)
         {
             Model = model;
         }

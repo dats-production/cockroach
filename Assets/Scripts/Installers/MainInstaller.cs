@@ -1,6 +1,6 @@
-﻿using DataBases;
-using Input;
-using Models;
+﻿using Configs;
+using DataBases;
+using Modules;
 using Services;
 using UnityEngine;
 using Utils;
@@ -10,17 +10,20 @@ namespace Installers
 {
     public class MainInstaller : MonoInstaller
     {
-        [SerializeField] private GetPointFromScene _getPointFromScene;
-        [SerializeField] private PlayerInput _playerInput;
-        [SerializeField] private PrefabsBase _prefabBase;
+        [SerializeField] private GetPointFromScene getPointFromScene;
+        [SerializeField] private PlayerInputModule playerInputModule;
+        [SerializeField] private GameConfig gameConfig;
+        [SerializeField] private PrefabsBase prefabBase;
         
         public override void InstallBindings()
         {
-            Container.Bind<GetPointFromScene>().FromInstance(_getPointFromScene).AsSingle();
-            Container.BindInterfacesTo<PlayerInput>().FromInstance(_playerInput).AsSingle();
-            Container.BindInterfacesTo<PrefabsBase>().FromInstance(_prefabBase).AsSingle();
-            Container.BindInterfacesTo<SpawnService>().AsSingle();
-            Container.Bind<GameStartService>().AsSingle().NonLazy();
+            Container.Bind<GetPointFromScene>().FromInstance(getPointFromScene).AsSingle();
+            Container.Bind<ScreenBorderDetectorModule>().AsSingle().NonLazy();
+            Container.BindInterfacesTo<PlayerInputModule>().FromInstance(playerInputModule).AsSingle();
+            Container.BindInterfacesTo<GameConfig>().FromInstance(gameConfig).AsSingle();
+            Container.BindInterfacesTo<PrefabsBase>().FromInstance(prefabBase).AsSingle();
+            Container.BindInterfacesTo<SpawnModule>().AsSingle();
+            Container.Bind<GameStartModule>().AsSingle().NonLazy();
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Views
         [SerializeField] private MeshRenderer meshRenderer;
         [SerializeField] private TMP_Text nameText;
         
-        public override void Link(GameModel model)
+        public override void Link(ObjectModel model)
         {
             var checkPointModel = model as CheckPointModel;
             checkPointModel?.Type.Subscribe(SetCheckPoint).AddTo(this);

@@ -6,23 +6,23 @@ using Zenject;
 
 namespace Services
 {
-    public interface ISpawnService<in TModel, in TTransform, out TObject>
+    public interface ISpawnModule<in TModel, in TTransform, out TObject>
     {
         TObject Spawn(TModel model, TTransform transform);
     }
     
-    public class SpawnService: ISpawnService<GameModel, Transform, ILinkable>
+    public class SpawnModule: ISpawnModule<ObjectModel, Transform, ILinkable>
     {
         private readonly DiContainer _container;
         private readonly IPrefabsBase _prefabsBase;
 
-        public SpawnService(DiContainer container, IPrefabsBase prefabsBase)
+        public SpawnModule(DiContainer container, IPrefabsBase prefabsBase)
         {
             _container = container;
             _prefabsBase = prefabsBase;
         }
         
-        public ILinkable Spawn(GameModel model, Transform transform)
+        public ILinkable Spawn(ObjectModel model, Transform transform)
         {
             var prefab = _prefabsBase.Get(model.Name);
             

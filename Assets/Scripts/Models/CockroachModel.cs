@@ -1,65 +1,64 @@
 ﻿using System;
 using System.Threading;
+using Configs;
 using Cysharp.Threading.Tasks;
-using Input;
+using Modules;
 using UniRx;
+using Unity.VisualScripting;
 using UnityEngine;
+using Utils;
 using Zenject;
 
 namespace Models
 {
     public interface ICockroachModel
     {
-        IReactiveProperty<ECockroachState> CockroachState { get; set;}
+        ECockroachState CockroachState { get; set;}
+        Transform FinishPoint { get; set;}
+        float BaseSpeed { get; set;}
+        float AccelerationSpeed { get; set;}
+        public float AccelerationTime { get; set; }
+
     }
-    public class CockroachModel : GameModel, ICockroachModel
+    public class CockroachModel : ObjectModel, ICockroachModel
     {
-        private IPlayerInput _playerInput;
-        private readonly float _safeSqrDistance = 1;
-        //private CancellationTokenSource _cancellationTokenSource;
-        private float _delay = 2;
+        private IPlayerInputModule _playerInputModule;
+        private IGameConfig _gameConfig;
         
-        public IReactiveProperty<ECockroachState> CockroachState { get; set;} = 
-            new ReactiveProperty<ECockroachState>();
+        private float _sqrTriggetDistance;
+        
+        public ECockroachState CockroachState { get; set;}
+        public Transform FinishPoint { get; set; }
+        public float BaseSpeed { get; set; }
+        public float AccelerationSpeed { get; set; }
+        public float AccelerationTime { get; set; }
 
         [Inject]
-        public void Construct(IPlayerInput playerInput)
+        public void Construct(IPlayerInputModule playerInputModule, IGameConfig gameConfig,
+            GetPointFromScene getPointFromScene)
         {
-            playerInput.MousePosition.Subscribe(SetCockroachState);
+            _gameConfig = gameConfig;
+            _playerInputModule = playerInputModule;
+            FinishPoint = getPointFromScene.GetPoint("Finish");
+            BaseSpeed = gameConfig.CockroachConfig.baseSpeed;
+            AccelerationSpeed = gameConfig.CockroachConfig.accelerationSpeed;
+            AccelerationTime = gameConfig.CockroachConfig.accelerationTime;
+            _sqrTriggetDistance = _gameConfig.PlayerConfig.triggetDistance;
         }
-        
-        private void SetCockroachState(Vector3 mousePosition)
-        {
-            if(View == null) return;
-            
-            var sqrDistance = (View.Transform.position - mousePosition).magnitude;
-            if (sqrDistance > _safeSqrDistance)
-            {
-                CockroachState.Value = ECockroachState.Running;
-            }
-            else
-            {
-                //_cancellationTokenSource.Cancel();
-                //_cancellationTokenSource = new CancellationTokenSource();
-                CockroachState.Value = ECockroachState.Escaping;
-                //DelayForEscaping(_cancellationTokenSource.Token).Forget();
-            }
+
+        public void SetCockroachState(Vector3 cockroachPosition)
+        { 
+            var sqrDistance = Vector3.Distance(cockroachPosition, _playerInputModule.MousePosition);
+
+            CockroachState = sqrDistance > _sqrTriggetDistance 
+                ? ECockroachState.Running 
+                : ECockroachState.Escaping;
         }
-        
-        // private async UniTask DelayForEscaping(CancellationToken token)
-        // {
-        //     token.ThrowIfCancellationRequested();
-        //     await UniTask.Delay(TimeSpan.FromSeconds(_delay), false, 
-        //         PlayerLoopTiming.PostLateUpdate, token);
-        //
-        //     CockroachState.Value = ECockroachState.Fleeing;
-        // }
     }
 }
 
 public enum ECockroachState
 {
     Running,
-    Escaping,
-    Fleeing
+    Escaping
 }
