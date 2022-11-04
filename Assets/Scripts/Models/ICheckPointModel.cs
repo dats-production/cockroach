@@ -11,7 +11,13 @@ namespace Models
         IReactiveProperty<CheckPointType> Type { get; set; }
     }
     
-    public class CheckPointModel : ObjectModel, ICheckPointModel
+    public class StartCheckPointModel : GameObjectModel, ICheckPointModel
+    {
+        public IReactiveProperty<CheckPointType> Type { get; set; } = 
+            new ReactiveProperty<CheckPointType>();
+    }
+    
+    public class FinishCheckPointModel : GameObjectModel, ICheckPointModel
     {
         public IReactiveProperty<CheckPointType> Type { get; set; } = 
             new ReactiveProperty<CheckPointType>();
