@@ -1,19 +1,28 @@
-﻿using UI.Views;
+﻿using Modules;
 using UniRx;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Zenject;
 
-namespace UI.Models
+namespace UI.Views
 {
     public class GameOverScreen : BaseScreen
     {
         [SerializeField] private Button restartButton;
-        
+        private IGameStateSwitcher _gameStateSwitcher;
+
         [Inject]
-        public void Construct()
+        public void Construct(IGameStateSwitcher gameStateSwitcher)
         {
-            restartButton.OnClickAsObservable().Subscribe(x => Debug.Log(111111)).AddTo(this);
+            _gameStateSwitcher = gameStateSwitcher;
+            restartButton.OnClickAsObservable().Subscribe(RestartGame).AddTo(this);
+        }
+
+        private void RestartGame(Unit _)
+        {
+            _gameStateSwitcher.ChangeState(EGameState.Restart);
+            base.Hide();
         }
     }
 }

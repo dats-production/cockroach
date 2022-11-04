@@ -31,8 +31,6 @@ namespace Modules.Fabrics
             Debug.Assert(components.Length == 1,$"Object view must have only one ILinkable component!!" +
                                                 $" Description : {go.name} " );
             var linkable = go.GetComponent<ILinkable>();
-            linkable?.Link(model);
-            model.View = linkable;
             return linkable;
         }
     }

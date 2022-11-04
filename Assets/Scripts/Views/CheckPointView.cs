@@ -1,7 +1,5 @@
-﻿using System;
-using Models;
+﻿using Models;
 using TMPro;
-using UniRx;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -12,26 +10,26 @@ namespace Views
         [SerializeField] private MeshRenderer meshRenderer;
         [SerializeField] private TMP_Text nameText;
         
-        public override void Link(ObjectModel model)
+        public override void Link(GameObjectModel model)
         {
-            var checkPointModel = model as CheckPointModel;
-            checkPointModel?.Type.Subscribe(SetCheckPoint).AddTo(this);
+            var checkPointModel = model as ICheckPointModel;
+            SetCheckPoint(checkPointModel);
         }
 
-        private void SetCheckPoint(CheckPointType type)
+        private void SetCheckPoint(ICheckPointModel model)
         {
-            nameText.text = type.ToString();
-            
-            switch (type)
+            switch (model)
             {
-                case CheckPointType.Start:
+                case StartCheckPointModel startModel:
                     meshRenderer.material.color = Color.blue;
+                    nameText.text = "START";
                     break;
-                case CheckPointType.Finish:
+                case FinishCheckPointModel finishModel:
                     meshRenderer.material.color = Color.red;
+                    nameText.text = "FINISH";
                     break;
                 default:
-                    Debug.LogError($"There is no checkPoint type: {type}");
+                    Debug.LogError($"There is no checkPoint type: {model}");
                     break;
             }
         }

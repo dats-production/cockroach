@@ -1,4 +1,4 @@
-﻿using UI.Models;
+﻿using Modules;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,11 +9,21 @@ namespace UI.Views
     public class StartScreen : BaseScreen
     {
         [SerializeField] private Button startButton;
-        
+        private IGameStateSwitcher _gameStateSwitcher;
+
         [Inject]
-        public void Construct()
+        public void Construct(IGameStateSwitcher gameStateSwitcher)
         {
-            startButton.OnClickAsObservable().Subscribe(x => Debug.Log(111111)).AddTo(this);
+            _gameStateSwitcher = gameStateSwitcher;
+            startButton.OnClickAsObservable()
+                .Subscribe(StartGame)
+                .AddTo(this);
+        }
+
+        private void StartGame(Unit _)
+        {
+            _gameStateSwitcher.ChangeState(EGameState.Start);
+            base.Hide();
         }
     }
 }

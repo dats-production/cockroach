@@ -6,7 +6,6 @@ namespace DataBases
     public interface IPrefabsBase
     {
         GameObject Get(string name);
-
     }
     
     [CreateAssetMenu(menuName = "Bases/PrefabsBase", fileName = "PrefabsBase")]

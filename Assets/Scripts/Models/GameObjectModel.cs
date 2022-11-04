@@ -1,13 +1,13 @@
-﻿using UniRx;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Views;
 
 namespace Models
 {
-    public abstract class ObjectModel
+    public abstract class GameObjectModel
     {
         public string Name { get; set; }
-        public Transform StartTransform;
-        public ILinkable View;
+        public Transform StartTransform { get; set; }
+        public List<ILinkable> Views { get; } = new ();
     }
 }

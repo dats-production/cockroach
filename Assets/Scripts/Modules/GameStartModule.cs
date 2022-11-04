@@ -1,39 +1,74 @@
 ﻿using Models;
 using UI;
 using UI.Views;
-using UnityEngine;
 using Utils;
-using Views;
 using Zenject;
 
-namespace Services
+namespace Modules
 {
-    public class GameStartModule
+    public interface IGameStartModule
     {
-        private ISpawnModule<ObjectModel, Transform, ILinkable> _spawnModule;
+        void RestartCockroachModel();
+    }
+    public class GameStartModule : IGameStartModule
+    {
+        private ISpawnModule<GameObjectModel> _spawnModule;
+        private GetPointFromScene _getPointFromScene;
+        private CockroachModel _cockroachModel;
+        private StartCheckPointModel _startPointModel;
+        private FinishCheckPointModel _finishPointModel;
+        private TriggerZoneModel _triggerZoneModel;
         
-        [Inject]
-        public void Construct(ISpawnModule<ObjectModel, Transform, ILinkable> spawnModule,
-            DiContainer diContainer, GetPointFromScene getPointFromScene, UIManager uiManager, StartScreen startScreen)
-        {
-            uiManager.OpenScreen(startScreen);
-            var startPointModel = diContainer.Instantiate<CheckPointModel>();
-            startPointModel.Name = "CheckPoint";
-            startPointModel.Type.Value = CheckPointType.Start;
-            var startPointTransform = getPointFromScene.GetPoint("Start");
-            spawnModule.Spawn(startPointModel, startPointTransform);
-            
-            var finishPointModel = diContainer.Instantiate<CheckPointModel>();
-            finishPointModel.Name = "CheckPoint";
-            finishPointModel.Type.Value = CheckPointType.Finish;
-            var finishPointTransform = getPointFromScene.GetPoint("Finish");
-            spawnModule.Spawn(finishPointModel, finishPointTransform);
+        private readonly int _cockroachViewCount = 2;
 
-            for (var i = 0; i < 2; i++)
+        [Inject]
+        public void Construct(ISpawnModule<GameObjectModel> spawnModule,
+            DiContainer diContainer, GetPointFromScene getPointFromScene, 
+            UIManager uiManager, StartScreen startScreen, IGameStateSwitcher gameStateSwitcher, 
+            CockroachModel cockroachModel, StartCheckPointModel startPointModel,
+            FinishCheckPointModel finishPointModel, TriggerZoneModel triggerZoneModel)
+        {
+            _triggerZoneModel = triggerZoneModel;
+            _finishPointModel = finishPointModel;
+            _startPointModel = startPointModel;
+            _cockroachModel = cockroachModel;
+            _getPointFromScene = getPointFromScene;
+            _spawnModule = spawnModule;
+
+            SetModels();
+            gameStateSwitcher.ChangeState(EGameState.Paused);
+            uiManager.OpenScreen(startScreen);
+        }
+
+        public void RestartCockroachModel()
+        {
+            SetCockroachModels(_cockroachViewCount);
+        }
+
+        private void SetModels()
+        {
+            _startPointModel.Name = "CheckPoint";
+            _startPointModel.StartTransform = _getPointFromScene.GetPoint("Start");
+            _spawnModule.Spawn(_startPointModel);
+            
+            _finishPointModel.Name = "CheckPoint";
+            _finishPointModel.StartTransform = _getPointFromScene.GetPoint("Finish");
+            _spawnModule.Spawn(_finishPointModel);
+
+            SetCockroachModels(_cockroachViewCount);
+            
+            _triggerZoneModel.Name = "TriggerZone";
+            _triggerZoneModel.StartTransform = _getPointFromScene.GetPoint("TriggerZone");
+            _spawnModule.Spawn(_triggerZoneModel);
+        }
+
+        private void SetCockroachModels(int count)
+        {
+            for (var i = 0; i < count; i++)
             {
-                var cockroachModel = diContainer.Instantiate<CockroachModel>();
-                cockroachModel.Name = "Cockroach";
-                spawnModule.Spawn(cockroachModel, startPointTransform);
+                _cockroachModel.Name = "Cockroach";
+                _cockroachModel.StartTransform = _getPointFromScene.GetPoint("Start");
+                _spawnModule.Spawn(_cockroachModel);
             }
         }
     }

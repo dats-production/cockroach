@@ -12,7 +12,7 @@ namespace Modules
         public void Construct()
         {
             var borders = Camera.main.ScreenToWorldPoint(
-                new Vector3(Screen.width, Screen.height, Camera.main.transform.position.y-1));
+                new Vector3(Screen.width, Screen.height, Camera.main.transform.position.y));
             HorizontalBorder = borders.x;
             VerticalBorder = borders.z;
         }

@@ -17,3 +17,5 @@ MonoBehaviour:
     GameObject: {fileID: 9026608761796746660, guid: ebc235033d6212c49ac2ee28d1edbbb8, type: 3}
   - Name: CheckPoint
     GameObject: {fileID: 2906349096760427034, guid: 76e830dd989e139419bba403fbf0b965, type: 3}
+  - Name: TriggerZone
+    GameObject: {fileID: 9031899029884687520, guid: a3ecf42e052d4574f8d2733af31dbfa7, type: 3}

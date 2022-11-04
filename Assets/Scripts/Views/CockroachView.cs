@@ -1,44 +1,50 @@
-using System;
 using Configs;
+using Configs.Settings;
 using Models;
 using Modules;
-using UniRx;
 using UnityEngine;
 using UnityEngine.AI;
 using Views;
 using Zenject;
-using Random = UnityEngine.Random;
 
 public class CockroachView : LinkableView
 {
     [SerializeField] private NavMeshAgent agent;
 
     private IPlayerInputModule _playerInputModule;
-    private IGameConfig _gameConfig;
     private CockroachModel _cockroachModel;
     private float _triggetDistance;
     private ScreenBorderDetectorModule _screenBorderDetectorModule;
+    private IGameSettings _gameSettings;
 
     [Inject]
-    public void Construct(IPlayerInputModule playerInputModule, 
-        IGameConfig gameConfig, ScreenBorderDetectorModule screenBorderDetectorModule)
+    public void Construct(IPlayerInputModule playerInputModule, IGameSettings gameSettings,
+        ScreenBorderDetectorModule screenBorderDetectorModule)
     {
         _screenBorderDetectorModule = screenBorderDetectorModule;
-        _gameConfig = gameConfig;
         _playerInputModule = playerInputModule;
+        _gameSettings = gameSettings;
     }
 
-    public override void Link(ObjectModel model)
+    public override void Link(GameObjectModel model)
     {
         _cockroachModel = model as CockroachModel;
     }
 
     private void Update()
     {
+        if(_cockroachModel == null) return;
         _cockroachModel.SetCockroachState(transform.position);
-        switch (_cockroachModel.CockroachState)
+        _cockroachModel.CheckDistanceToFinish(transform.position);
+        SwitchState(_cockroachModel.CockroachState.Value);
+    }
+
+    private void SwitchState(ECockroachState state)
+    {
+        switch (state)
         {
             case ECockroachState.Running:
+                agent.acceleration = 8;
                 agent.destination = _cockroachModel.FinishPoint.position;
                 agent.speed = _cockroachModel.BaseSpeed;
                 //agent.speed = _cockroachModel.BaseSpeed * _accelerationMultiplier;
@@ -47,7 +53,7 @@ public class CockroachView : LinkableView
                 //     _accelerationMultiplier = 1;
                 break;
             case ECockroachState.Escaping:
-                agent.acceleration = _gameConfig.CockroachConfig.chasingAcceleration;
+                agent.acceleration = _cockroachModel.AccelerationSpeed;
                 agent.destination = GetSafePosition();
                 agent.speed = _cockroachModel.AccelerationSpeed;
                 //_accelerationMultiplier = 0;
@@ -57,23 +63,24 @@ public class CockroachView : LinkableView
                 //     _accelerationMultiplier = 1;
                 break;
             default:
-                Debug.LogError($"There is no cockroach state: {_cockroachModel.CockroachState}");
+                Debug.LogError($"There is no cockroach state: {state}");
                 break;
         }
     }
-    
     private Vector3 GetSafePosition()
     {
-        var cockroachPos = Transform.position;
+        var cockroachPos = agent.transform.position;
         var mousePos = _playerInputModule.MousePosition;
-        var safePosition = (cockroachPos - mousePos).normalized * (_gameConfig.CockroachConfig.safeDistance);
+
+        var safePosition = (cockroachPos - mousePos).normalized + cockroachPos;
+
         if (safePosition.x > _screenBorderDetectorModule.HorizontalBorder
-            && safePosition.x < -_screenBorderDetectorModule.HorizontalBorder
-            && safePosition.y > _screenBorderDetectorModule.VerticalBorder
-            && safePosition.y < -_screenBorderDetectorModule.VerticalBorder)
+            || safePosition.x < -_screenBorderDetectorModule.HorizontalBorder
+            || safePosition.z > _screenBorderDetectorModule.VerticalBorder
+            || safePosition.z < -_screenBorderDetectorModule.VerticalBorder)
         {
-            GetSafePosition();
-        }
+            return Vector3.zero;
+        };
         return safePosition;
     }
 }

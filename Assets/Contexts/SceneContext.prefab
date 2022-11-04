@@ -82,7 +82,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   getPointFromScene: {fileID: 948992103273316357}
   playerInputModule: {fileID: 0}
-  gameConfig: {fileID: 11400000, guid: 08b094d224166044fb37e68a326af4ee, type: 2}
   prefabBase: {fileID: 11400000, guid: e784e924b5205e94bbfa64cf65430fae, type: 2}
 --- !u!114 &6443000545502438654
 MonoBehaviour:
@@ -98,6 +97,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startScreen: {fileID: 0}
   gameOverScreen: {fileID: 0}
+  settingsScreen: {fileID: 0}
 --- !u!114 &948992103273316357
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -115,3 +115,5 @@ MonoBehaviour:
     Key: Start
   - Transform: {fileID: 0}
     Key: Finish
+  - Transform: {fileID: 0}
+    Key: TriggerZone
