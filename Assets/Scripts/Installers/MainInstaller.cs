@@ -1,5 +1,4 @@
-﻿using Configs;
-using Configs.Settings;
+﻿using Configs.Settings;
 using DataBases;
 using Models;
 using Modules;

@@ -5,8 +5,8 @@ namespace Modules
 {
     public class ScreenBorderDetectorModule
     {
-        public float HorizontalBorder;
-        public float VerticalBorder;
+        public float HorizontalBorder { get; private set; }
+        public float VerticalBorder { get; private set; }
         
         [Inject]
         public void Construct()

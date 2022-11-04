@@ -1,7 +1,6 @@
 ﻿using Modules;
 using UniRx;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Zenject;
 
@@ -10,6 +9,7 @@ namespace UI.Views
     public class GameOverScreen : BaseScreen
     {
         [SerializeField] private Button restartButton;
+        
         private IGameStateSwitcher _gameStateSwitcher;
 
         [Inject]

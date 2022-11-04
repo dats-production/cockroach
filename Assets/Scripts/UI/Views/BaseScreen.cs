@@ -2,7 +2,14 @@
 
 namespace UI.Views
 {
-    public abstract class BaseScreen: MonoBehaviour, IScreen
+    public interface IBaseScreen
+    {
+        bool IsShown { get; }
+        void Show();
+        void Hide();
+    }
+    
+    public abstract class BaseScreen: MonoBehaviour, IBaseScreen
     {
         public bool IsShown { get; private set; }
 

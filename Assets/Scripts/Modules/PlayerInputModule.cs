@@ -1,18 +1,18 @@
-using UniRx;
 using UnityEngine;
 
 namespace Modules
 {
     public interface IPlayerInputModule
     {
-        Vector3 MousePosition { get; set; }
+        Vector3 MousePosition { get; }
     }
 
     public class PlayerInputModule : MonoBehaviour, IPlayerInputModule
     {
         [SerializeField] private Camera _camera;
         private LayerMask _groundLayerMask;
-        public Vector3 MousePosition { get; set; }
+        
+        public Vector3 MousePosition { get; private set; }
     
         private void Start()
         {

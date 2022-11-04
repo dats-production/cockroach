@@ -7,12 +7,12 @@ namespace Modules
     {
         void Pause();
         void UnPause();
-        IReactiveProperty<bool> IsPaused { get; set; }
+        IReactiveProperty<bool> IsPaused { get; }
     }
 
     public class PauseModule : IPauseModule
     {
-        public IReactiveProperty<bool> IsPaused { get; set; } = new ReactiveProperty<bool>();
+        public IReactiveProperty<bool> IsPaused { get; private set; } = new ReactiveProperty<bool>();
 
         public void Pause()
         {

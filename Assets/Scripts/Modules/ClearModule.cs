@@ -1,5 +1,4 @@
 ﻿using Models;
-using Views;
 
 namespace Modules
 {

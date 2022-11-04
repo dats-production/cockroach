@@ -1,4 +1,3 @@
-using Configs;
 using Configs.Settings;
 using Models;
 using Modules;
@@ -15,15 +14,12 @@ public class CockroachView : LinkableView
     private CockroachModel _cockroachModel;
     private float _triggetDistance;
     private ScreenBorderDetectorModule _screenBorderDetectorModule;
-    private IGameSettings _gameSettings;
 
     [Inject]
-    public void Construct(IPlayerInputModule playerInputModule, IGameSettings gameSettings,
-        ScreenBorderDetectorModule screenBorderDetectorModule)
+    public void Construct(IPlayerInputModule playerInputModule, ScreenBorderDetectorModule screenBorderDetectorModule)
     {
         _screenBorderDetectorModule = screenBorderDetectorModule;
         _playerInputModule = playerInputModule;
-        _gameSettings = gameSettings;
     }
 
     public override void Link(GameObjectModel model)

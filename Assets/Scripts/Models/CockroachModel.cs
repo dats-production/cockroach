@@ -1,6 +1,4 @@
-﻿using Configs;
-using Configs.Settings;
-using Cysharp.Threading.Tasks;
+﻿using Configs.Settings;
 using Modules;
 using UniRx;
 using UnityEngine;
@@ -12,23 +10,23 @@ namespace Models
     public interface ICockroachModel
     {
         IReactiveProperty<ECockroachState>  CockroachState { get; set;}
-        Transform FinishPoint { get; set;}
-        float BaseSpeed { get; set;}
-        float AccelerationSpeed { get; set;}
+        Transform FinishPoint { get; }
+        float BaseSpeed { get; }
+        float AccelerationSpeed { get; }
     }
+    
     public class CockroachModel : GameObjectModel, ICockroachModel
     {
         private IPlayerInputModule _playerInputModule;
-        
         private float _triggetDistance;
         private FinishCheckPointModel _finishCheckPointModel;
         private IGameStateSwitcher _gameStateSwitcher;
 
         public IReactiveProperty<ECockroachState> CockroachState { get; set; } =
             new ReactiveProperty<ECockroachState>();
-        public Transform FinishPoint { get; set; }
-        public float BaseSpeed { get; set; }
-        public float AccelerationSpeed { get; set; }
+        public Transform FinishPoint { get; private set; }
+        public float BaseSpeed { get; private set; }
+        public float AccelerationSpeed { get; private set; }
 
         [Inject]
         public void Construct(IPlayerInputModule playerInputModule, GetPointFromScene getPointFromScene,
